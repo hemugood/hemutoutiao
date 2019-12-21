@@ -36,7 +36,7 @@ export default {
       //   Authorization: `Bearer ${token}`
       // }
     }).then(result => {
-      this.userInfor = result.data.data
+      this.userInfor = result.data
     })
   },
   methods: {
