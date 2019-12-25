@@ -8,9 +8,9 @@
           <el-input v-model="formData.title" style="width:60%"></el-input>
       </el-form-item>
       <el-form-item prop="content" label="内容">
-          <el-input v-model="formData.content" type="textarea" :rows="4"></el-input>
+          <quill-editor style="height:400px" v-model="formData.content" type="textarea" :rows="4"></quill-editor >
       </el-form-item>
-      <el-form-item prop="type" label="封面">
+      <el-form-item prop="type" label="封面" style="margin-top:100px">
           <el-radio-group v-model="formData.cover.type">
               <el-radio :label="1">单图</el-radio>
               <el-radio :label="3">三图</el-radio>
@@ -18,6 +18,7 @@
               <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
       </el-form-item>
+      <cover-image :list="formData.cover.images"></cover-image>
       <el-form-item prop="channel_id" label="频道">
           <el-select v-model="formData.channel_id">
               <el-option v-for="item in channels" :key="item.id" :value="item.id" :label="item.name"></el-option>
@@ -57,6 +58,7 @@ export default {
   watch: {
     $router: function (to, from) {
       if (Object.keys(to.params).length) {
+        this.getArticleById(to.params.articleId)
       } else {
         this.formData = {
           title: '',
@@ -67,9 +69,21 @@ export default {
           }
         }
       }
+    },
+    'formData.cover.type': function () {
+      if (this.formData.cover.type === 0 || this.formData.cover.type === -1) {
+        this.formData.cover.images = []
+      } else if (this.formData.cover.type === 1) {
+        this.formData.cover.images = ['']
+      } else if (this.formData.cover.type === 3) {
+        this.formData.cover.images = ['', '', '']
+      }
     }
   },
   methods: {
+    // changeType () {
+    //   alert(this.formData.cover.type)
+    // },
     getChannels () {
       this.$axios({
         url: '/channels'
