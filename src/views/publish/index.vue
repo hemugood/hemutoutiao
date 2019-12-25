@@ -54,6 +54,21 @@ export default {
       }
     }
   },
+  watch: {
+    $router: function (to, from) {
+      if (Object.keys(to.params).length) {
+      } else {
+        this.formData = {
+          title: '',
+          content: '',
+          cover: {
+            type: 0,
+            images: []
+          }
+        }
+      }
+    }
+  },
   methods: {
     getChannels () {
       this.$axios({
@@ -65,21 +80,50 @@ export default {
     publishArticle (draft) {
       this.$refs.publishForm.validate((isOk) => {
         if (isOk) {
+          let{ articleId } = this.$route.params
           this.$axios({
-            url: '/articles',
-            method: 'post',
+            method: articleId ? 'put' : 'post',
+            url: articleId ? `/articles/${articleId}` : `/articles`,
             params: { draft },
             data: this.formData
-          }).then(() => {
+          }).then(resule => {
             this.$router.push('/home/articles')
           })
+          // if (articleId) {
+          //   this.$axios({
+          //     method: 'put',
+          //     url: `/articles/${articleId}`,
+          //     params: { draft },
+          //     data: this.formData
+          //   }).then(() => {
+          //     this.$router.push('/home/articles')
+          //   })
+          // } else {
+          //   this.$axios({
+          //     url: '/articles',
+          //     method: 'post',
+          //     params: { draft },
+          //     data: this.formData
+          //   }).then(() => {
+          //     this.$router.push('/home/articles')
+          //   })
+          // }
         }
+      })
+    },
+    getArticleById (articleId) {
+      this.$axios({
+        url: `/articles/${articleId}`
+      }).then(result => {
+        this.formData = result.data
       })
     }
 
   },
   created () {
     this.getChannels()
+    let{ articleId } = this.$route.params
+    articleId && this.getArticleById(articleId)
   }
 }
 </script>
