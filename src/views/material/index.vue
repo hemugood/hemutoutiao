@@ -66,15 +66,13 @@ export default {
     }
   },
   methods: {
-    delMaterial (id) {
-      this.$confirm('您确定要删除吗').then(() => {
-        this.$axios({
-          url: `/user/images/${id}`,
-          method: `delete`
-        }).then(() => {
-          this.getAllMaterial()
-        })
+    async delMaterial (id) {
+      await this.$confirm('您确定要删除吗')
+      await this.$axios({
+        url: `/user/images/${id}`,
+        method: `delete`
       })
+      this.getAllMaterial()
     },
     collectDrCancel (row) {
       this.$axios({
