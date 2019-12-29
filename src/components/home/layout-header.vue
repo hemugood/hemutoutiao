@@ -1,7 +1,7 @@
 <template>
   <el-row class="layout-header" type="flex" align="middle" justify="space-between">
       <el-col class="left" :span="6">
-          <i class="el-icon-s-unfold"></i>
+          <i @click="collaspseOrOpen" :class="{'el-icon-s-unfold':collaspse,'el-icon-s-fold':!collaspse}"></i>
           <span class="title">江苏传智播客教育科技股份有限公司</span>
       </el-col>
       <el-col class="right" :span="4">
@@ -25,6 +25,7 @@ import eventBus from '../../utils/eventBus'
 export default {
   data () {
     return {
+      collaspse: false,
       userInfor: {},
       defaultImg: require('../../assets/img/jjy.jpg')
     }
@@ -40,11 +41,13 @@ export default {
     // }).then(result => {
     //   this.userInfor = result.data
     // })
-    eventBus.$on('updateUserInfoSuccess', () => {
-      this.getUserInfo()
-    })
+    // eventBus.$emit('changeCollapse')
   },
   methods: {
+    collaspseOrOpen () {
+      this.collaspse = !this.collaspse
+      eventBus.$emit('changeCollapse')
+    },
     getUserInfo () {
       this.$axios({
         url: '/user/profile'
@@ -73,6 +76,9 @@ export default {
                 margin-left:4px;
                 color: #2c3e50;
                 font-size: 14px;
+            }
+            i{
+              font-size: 22px
             }
         }
         .right{
